@@ -14,6 +14,8 @@ public class StringCalculator implements Calculator<String, Integer> {
 
     private static final String DELIMITER = ",";
 
+    private static final String REGEX_NEWLINE = "\n";
+
     /**
      * Processes the given single input and returns the response by adding all the numbers parsed from String
      * .
@@ -34,7 +36,9 @@ public class StringCalculator implements Calculator<String, Integer> {
      * @return int[]
      */
     private static int[] splitAndFetchNumbers(String input) {
-        String[] numbersAsString = Objects.requireNonNull(input, "Input String cannot be null").split(DELIMITER);
+        input = input.replaceAll(REGEX_NEWLINE, DELIMITER);
+        String[] numbersAsString = input.split(DELIMITER);
+        if(numbersAsString.length == 0) throw new NumberFormatException("Invalid String provided!");
         return Arrays.stream(numbersAsString).mapToInt(Integer::parseInt).toArray();
     }
 }

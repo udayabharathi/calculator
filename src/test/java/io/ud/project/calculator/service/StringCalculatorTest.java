@@ -26,6 +26,11 @@ public class StringCalculatorTest {
         assertTrue("Empty String", stringCalculator.add("").equals(0));
     }
 
+    @Test(expected = NumberFormatException.class)
+    public void add_InputWithOnlyDelimiter_ShouldThrowNumberFormatException() {
+        stringCalculator.add(",");
+    }
+
     @Test
     public void add_SingleNumber_ShouldReturnSameNumber() {
         assertTrue("Single Number", stringCalculator.add("1").equals(1));
@@ -44,5 +49,15 @@ public class StringCalculatorTest {
     @Test
     public void add_UnknownNumberOfInputs_ShouldProcessAndReturnSum() {
         assertTrue("Unknown Number of Inputs", stringCalculator.add("1,2,3,4,5,6,7,8,9").equals(45));
+    }
+
+    @Test
+    public void add_InputWithNewLineAndCommaAsDelimiter_ShouldProcessAndReturnSum() {
+        assertTrue("New line and comma as Delimiter", stringCalculator.add("1,2\n3,4,5\n6,7,8\n9").equals(45));
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void add_InputWithMultiDelimitersTogether_ShouldThrowNumberFormatException() {
+        stringCalculator.add("1,\n2");
     }
 }
