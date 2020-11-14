@@ -60,4 +60,19 @@ public class StringCalculatorTest {
     public void add_InputWithMultiDelimitersTogether_ShouldThrowNumberFormatException() {
         stringCalculator.add("1,\n2");
     }
+
+    @Test
+    public void add_CustomDelimiter_ShouldProcessAndReturnSum() {
+        assertTrue("Custom Delimiter", stringCalculator.add("//;\n1;2;3;4").equals(10));
+    }
+
+    @Test
+    public void add_CustomDelimiterWithNewLine_ShouldProcessAndReturnSum() {
+        assertTrue("Custom Delimiter with new line", stringCalculator.add("//;\n1;2\n3;4").equals(10));
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void add_CustomDelimiterWithExistingDelimiters_ShouldThrowNumberFormatException() {
+        assertTrue("Custom Delimiter along with existing comma", stringCalculator.add("//;\n1\n2;3,4").equals(10));
+    }
 }
