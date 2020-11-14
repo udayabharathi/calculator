@@ -75,4 +75,14 @@ public class StringCalculatorTest {
     public void add_CustomDelimiterWithExistingDelimiters_ShouldThrowNumberFormatException() {
         assertTrue("Custom Delimiter along with existing comma", stringCalculator.add("//;\n1\n2;3,4").equals(10));
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void add_NegativeNumbers_ShouldThrowUnsupportedOperationException() {
+        stringCalculator.add("1,-2,3,4");
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void add_NegativeNumbersWithCustomDelimiter_ShouldThrowUnsupportedOperationException() {
+        stringCalculator.add("//;\n1;-2;3\n4");
+    }
 }

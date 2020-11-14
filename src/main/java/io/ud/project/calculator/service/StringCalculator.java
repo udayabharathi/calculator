@@ -30,8 +30,33 @@ public class StringCalculator implements Calculator<String, Integer> {
     public Integer add(String input) {
         if (Objects.requireNonNull(input, "Input cannot be null!").isEmpty()) return 0;
         if (isCustomDelimiterEnabled(input))
-            return Arrays.stream(splitAndFetchNumbers(fetchNumberInput(input), fetchCustomDelimiter(input))).sum();
-        return Arrays.stream(splitAndFetchNumbers(input)).sum();
+            return sum(splitAndFetchNumbers(fetchNumberInput(input), fetchCustomDelimiter(input)));
+        return sum(splitAndFetchNumbers(input));
+    }
+
+    /**
+     * Finds sum of given numbers.
+     *
+     * @param array Array of numbers.
+     * @return int
+     */
+    private static int sum(int[] array) {
+        checkForNegative(array);
+        return Arrays.stream(array).sum();
+    }
+
+    /**
+     * Checks for negative number in the array.
+     *
+     * @param array Array of numbers.
+     */
+    private static void checkForNegative(int[] array) {
+        int[] negativeNumbers = Arrays.stream(array).filter(number -> number < 0).toArray();
+        if (negativeNumbers.length > 0)
+            throw new UnsupportedOperationException(
+                    "Negative numbers are not allowed. Following negative numbers are included: "
+                            + Arrays.toString(negativeNumbers)
+            );
     }
 
     /**
