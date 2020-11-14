@@ -85,4 +85,9 @@ public class StringCalculatorTest {
     public void add_NegativeNumbersWithCustomDelimiter_ShouldThrowUnsupportedOperationException() {
         stringCalculator.add("//;\n1;-2;3\n4");
     }
+
+    @Test
+    public void add_NumbersGreaterThan1000_ShouldIgnoreNumbersMoreThan1000AndFindsSum() {
+        assertTrue("Numbers more than 1000", stringCalculator.add("1,2,1001,1000").equals(1003));
+    }
 }

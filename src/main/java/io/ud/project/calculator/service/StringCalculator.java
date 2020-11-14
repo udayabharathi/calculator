@@ -42,7 +42,7 @@ public class StringCalculator implements Calculator<String, Integer> {
      */
     private static int sum(int[] array) {
         checkForNegative(array);
-        return Arrays.stream(array).sum();
+        return Arrays.stream(array).filter(number -> number <= 1000).sum();
     }
 
     /**
