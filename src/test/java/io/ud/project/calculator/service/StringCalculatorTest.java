@@ -40,4 +40,9 @@ public class StringCalculatorTest {
     public void add_NullInput_ShouldThrowNullPointerException() {
         stringCalculator.add(null);
     }
+
+    @Test
+    public void add_UnknownNumberOfInputs_ShouldProcessAndReturnSum() {
+        assertTrue("Unknown Number of Inputs", stringCalculator.add("1,2,3,4,5,6,7,8,9").equals(45));
+    }
 }
