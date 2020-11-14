@@ -10,6 +10,7 @@ import java.util.Objects;
  * @author <a href = "https://github.com/udayabharathi">@udayabharathi</a>
  * @since 2020-11-14
  */
+@SuppressWarnings("RegExpRedundantEscape")
 public class StringCalculator implements Calculator<String, Integer> {
 
     private static final String DELIMITER = ",";
@@ -19,6 +20,22 @@ public class StringCalculator implements Calculator<String, Integer> {
     private static final Character NEWLINE = '\n';
 
     private static final String CUSTOM_DELIMITER_PATTERN = "//";
+
+    private static final String OPEN_ARRAY = "[";
+
+    private static final String CLOSE_ARRAY = "]";
+
+    private static final String REGEX_ASTERISK = "\\*";
+
+    private static final String ESCAPED_ASTERISK = "\\\\*";
+
+    private static final String REGEX_OPEN_ARRAY = "\\[";
+
+    private static final String ESCAPED_OPEN_ARRAY = "\\\\[";
+
+    private static final String REGEX_CLOSE_ARRAY = "\\]";
+
+    private static final String ESCAPED_CLOSE_ARRAY = "\\\\]";
 
     /**
      * Processes the given single input and returns the response by adding all the numbers parsed from the given String.
@@ -76,7 +93,10 @@ public class StringCalculator implements Calculator<String, Integer> {
      * @return String
      */
     private static String fetchCustomDelimiter(String input) {
-        return input.substring(2, input.indexOf(NEWLINE));
+        String delimiter = input.substring(2, input.indexOf(NEWLINE));
+        if (delimiter.contains(OPEN_ARRAY) && delimiter.contains(CLOSE_ARRAY))
+            return delimiter.substring(delimiter.indexOf(OPEN_ARRAY) + 1, delimiter.lastIndexOf(CLOSE_ARRAY));
+        return delimiter;
     }
 
     /**
@@ -110,6 +130,11 @@ public class StringCalculator implements Calculator<String, Integer> {
      * @return int[]
      */
     private static int[] splitAndFetchNumbers(String input, String delimiter) {
+        delimiter = delimiter
+                .replaceAll(REGEX_ASTERISK, ESCAPED_ASTERISK)
+                .replaceAll(REGEX_OPEN_ARRAY, ESCAPED_OPEN_ARRAY)
+                .replaceAll(REGEX_CLOSE_ARRAY, ESCAPED_CLOSE_ARRAY);
+        LOGGER.info("delimiter: {}", delimiter);
         input = input.replaceAll(REGEX_NEWLINE, delimiter);
         String[] numbersAsString = input.split(delimiter);
         if (numbersAsString.length == 0) throw new NumberFormatException("Invalid String provided!");

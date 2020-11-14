@@ -90,4 +90,25 @@ public class StringCalculatorTest {
     public void add_NumbersGreaterThan1000_ShouldIgnoreNumbersMoreThan1000AndFindsSum() {
         assertTrue("Numbers more than 1000", stringCalculator.add("1,2,1001,1000").equals(1003));
     }
+
+    @Test
+    public void add_OpenArrayAsDelimiter_ShouldProcessAndReturnSum() {
+        assertTrue("Open array character ('[') as delimiter", stringCalculator.add("//[\n1[2[3").equals(6));
+    }
+
+    @Test
+    public void add_CloseArrayAsDelimiter_ShouldProcessAndReturnSum() {
+        assertTrue("Open array character (']') as delimiter", stringCalculator.add("//]\n1]2]3").equals(6));
+    }
+
+    @Test
+    public void add_MultiCharacterDelimiter_ShouldProcessAndReturnSum() {
+        assertTrue("Multi Character Delimiter", stringCalculator.add("//[***]\n1***2***3").equals(6));
+    }
+
+    @Test
+    public void add_MultiCharacterDelimiterWithOpenAndCloseArrayCharacters_ShouldProcessAndReturnSum() {
+        assertTrue("Multi Character Delimiter with open and close array characters",
+                stringCalculator.add("//[*[*[]*]\n1*[*[]*2*[*[]*3").equals(6));
+    }
 }
