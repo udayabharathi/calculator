@@ -107,8 +107,8 @@ public class StringCalculatorTest {
     }
 
     @Test
-    public void add_MultiCharacterDelimiterWithOpenAndCloseArrayCharacters_ShouldProcessAndReturnSum() {
+    public void add_MultiDelimitersWithMoreThanOneCharacters_ShouldProcessAndReturnSum() {
         assertTrue("Multi Character Delimiter with open and close array characters",
-                stringCalculator.add("//[*[*[]*]\n1*[*[]*2*[*[]*3").equals(6));
+                stringCalculator.add("//[;;;][***]\n1;;;2***3").equals(6));
     }
 }

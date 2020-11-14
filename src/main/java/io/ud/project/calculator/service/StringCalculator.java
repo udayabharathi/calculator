@@ -1,6 +1,8 @@
 package io.ud.project.calculator.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -36,6 +38,8 @@ public class StringCalculator implements Calculator<String, Integer> {
     private static final String REGEX_CLOSE_ARRAY = "\\]";
 
     private static final String ESCAPED_CLOSE_ARRAY = "\\\\]";
+
+    private static final String COMMON_DELIMITER = "DELIMIT";
 
     /**
      * Processes the given single input and returns the response by adding all the numbers parsed from the given String.
@@ -90,13 +94,17 @@ public class StringCalculator implements Calculator<String, Integer> {
      * Fetches custom delimiter.
      *
      * @param input Input String.
-     * @return String
+     * @return String[]
      */
-    private static String fetchCustomDelimiter(String input) {
+    private static String[] fetchCustomDelimiter(String input) {
         String delimiter = input.substring(2, input.indexOf(NEWLINE));
-        if (delimiter.contains(OPEN_ARRAY) && delimiter.contains(CLOSE_ARRAY))
-            return delimiter.substring(delimiter.indexOf(OPEN_ARRAY) + 1, delimiter.lastIndexOf(CLOSE_ARRAY));
-        return delimiter;
+        List<String> delimiters = new ArrayList<>();
+        if (!(delimiter.contains(OPEN_ARRAY) && delimiter.contains(CLOSE_ARRAY))) return new String[]{delimiter};
+        while (delimiter.contains(OPEN_ARRAY) && delimiter.contains(CLOSE_ARRAY)) {
+            delimiters.add(delimiter.substring(delimiter.indexOf(OPEN_ARRAY) + 1, delimiter.indexOf(CLOSE_ARRAY)));
+            delimiter = delimiter.substring(delimiter.indexOf(CLOSE_ARRAY) + 1);
+        }
+        return delimiters.stream().toArray(k -> new String[delimiters.size()]);
     }
 
     /**
@@ -125,18 +133,20 @@ public class StringCalculator implements Calculator<String, Integer> {
     /**
      * Splits and parses the String as int array
      *
-     * @param input     Input String.
-     * @param delimiter Custom delimiter.
+     * @param input      Input String.
+     * @param delimiters Custom delimiters.
      * @return int[]
      */
-    private static int[] splitAndFetchNumbers(String input, String delimiter) {
-        delimiter = delimiter
-                .replaceAll(REGEX_ASTERISK, ESCAPED_ASTERISK)
-                .replaceAll(REGEX_OPEN_ARRAY, ESCAPED_OPEN_ARRAY)
-                .replaceAll(REGEX_CLOSE_ARRAY, ESCAPED_CLOSE_ARRAY);
-        LOGGER.info("delimiter: {}", delimiter);
-        input = input.replaceAll(REGEX_NEWLINE, delimiter);
-        String[] numbersAsString = input.split(delimiter);
+    private static int[] splitAndFetchNumbers(String input, String[] delimiters) {
+        for (String delimiter : delimiters) {
+            delimiter = delimiter
+                    .replaceAll(REGEX_ASTERISK, ESCAPED_ASTERISK)
+                    .replaceAll(REGEX_OPEN_ARRAY, ESCAPED_OPEN_ARRAY)
+                    .replaceAll(REGEX_CLOSE_ARRAY, ESCAPED_CLOSE_ARRAY);
+            input = input.replaceAll(delimiter, COMMON_DELIMITER);
+        }
+        input = input.replaceAll(REGEX_NEWLINE, COMMON_DELIMITER);
+        String[] numbersAsString = input.split(COMMON_DELIMITER);
         if (numbersAsString.length == 0) throw new NumberFormatException("Invalid String provided!");
         return Arrays.stream(numbersAsString).mapToInt(Integer::parseInt).toArray();
     }
